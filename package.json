@@ -1,0 +1,22 @@
+{
+  "name": "web",
+  "version": "0.0.0",
+  "description": "Web",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/egorovpavel/web.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/egorovpavel/web/issues"
+  },
+  "homepage": "https://github.com/egorovpavel/web",
+  "dependencies": {
+    "mocha": "~1.18.2"
+  }
+}
