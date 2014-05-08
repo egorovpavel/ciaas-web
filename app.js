@@ -1,18 +1,21 @@
 "use strict";
 var express = require('express');
 var http = require('http');
-var consolidate = require('consolidate');
 var swig = require('swig');
 
 var app = express();
 app.engine('html', swig.renderFile);
-app.set('port', 3000);
+app.set('port', 8080);
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 app.set('view cache', false);
 
 app.get('/', function (request, response) {
-    response.render('index');
+    response.render('index', {});
+});
+
+app.get('/dashboard', function (request, response) {
+    response.render('dashboard');
 });
 
 http.createServer(app).listen(
@@ -21,6 +24,3 @@ http.createServer(app).listen(
         console.log("Express server listening on port " + app.get('port'));
     }
 );
-/**
- * Created by Iurie on 08-05-2014.
- */
