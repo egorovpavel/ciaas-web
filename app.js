@@ -2,6 +2,7 @@
 var express = require('express');
 var http = require('http');
 var swig = require('swig');
+var fs = require('fs');
 
 var app = express();
 app.engine('html', swig.renderFile);
@@ -12,6 +13,7 @@ app.set('view cache', false);
 
 
 var controllers_path = __dirname + '/controllers';
+
 
 fs.readdirSync(controllers_path).forEach(function (file) {
     require(controllers_path + '/' + file)(app);
