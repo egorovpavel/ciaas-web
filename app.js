@@ -11,6 +11,8 @@ app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 app.set('view cache', false);
 
+app.use(express.static(__dirname + '/assets'));
+
 
 var controllers_path = __dirname + '/controllers';
 
