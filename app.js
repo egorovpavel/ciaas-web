@@ -10,9 +10,13 @@ app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 app.set('view cache', false);
 
-app.get('/', function (request, response) {
-    response.render('index');
+
+var controllers_path = __dirname + '/controllers';
+
+fs.readdirSync(controllers_path).forEach(function (file) {
+    require(controllers_path + '/' + file)(app);
 });
+
 
 http.createServer(app).listen(
     app.get('port'),
