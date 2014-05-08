@@ -2,6 +2,7 @@
 var express = require('express');
 var http = require('http');
 var swig = require('swig');
+var fs = require('fs');
 
 var app = express();
 app.engine('html', swig.renderFile);
@@ -10,9 +11,14 @@ app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 app.set('view cache', false);
 
-app.get('/', function (request, response) {
-    response.render('index', {});
+
+var controllers_path = __dirname + '/controllers';
+
+
+fs.readdirSync(controllers_path).forEach(function (file) {
+    require(controllers_path + '/' + file)(app);
 });
+
 
 app.get('/dashboard', function (request, response) {
     response.render('dashboard');
