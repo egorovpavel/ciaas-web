@@ -13,8 +13,29 @@
         <link href="css/boot-CIP.css" rel="stylesheet">
     </head>
     <body>
+        <header>
+            <div class="navbar navbar-fixed-top">
+                <div class="navbar-inner">
+                    <div class="container">
+                        <a href="../home" class="brand brand-bootbus">Continuous Integration Platform</a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right">
+                                {% block contentHeader %}Some href{% endblock %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-        {% block content %}Some content{% endblock %}
+        <div class="content">
+            <div class="container">
+                {% block contentMain %}Some content{% endblock %}
+            </div>
+        </div>
+        <footer>
+            {% block contentFooter %}Some content{% endblock %}
+        </footer>
 
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
