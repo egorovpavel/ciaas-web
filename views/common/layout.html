@@ -1,44 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Continuous Integration Platform">
-        <meta name="author" content="Your name">
-        <title>Continuous Integration Platform</title>
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-        <link href="css/font-awesome.css" rel="stylesheet">
-        <link href="css/font-awesome-ie7.css" rel="stylesheet">
-        <link href="css/boot-CIP.css" rel="stylesheet">
-    </head>
-    <body>
-        <header>
-            <div class="navbar navbar-fixed-top">
-                <div class="navbar-inner">
-                    <div class="container">
-                        <a href="../home" class="brand brand-bootbus">Continuous Integration Platform</a>
-                        <div class="nav-collapse collapse">
-                            <ul class="nav pull-right">
-                                {% block contentHeader %}Some href{% endblock %}
-                            </ul>
-                        </div>
-                    </div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Continuous Integration Platform">
+    <meta name="author" content="Your name">
+    <title>Continuous Integration Platform</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <!--<link href="css/font-awesome.css" rel="stylesheet">-->
+    <!--<link href="css/font-awesome-ie7.css" rel="stylesheet">-->
+    <!--<link href="css/boot-CIP.css" rel="stylesheet">-->
+</head>
+<body>
+<header>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a href="../home" class="brand brand-bootbus">Continuous Integration Platform</a>
+
+                <div class="nav-collapse collapse">
+                    <ul class="nav pull-right">
+                        {% block contentHeader %}Some href{% endblock %}
+                    </ul>
                 </div>
             </div>
-        </header>
-
-        <div class="content">
-            <div class="container">
-                {% block contentMain %}Some content{% endblock %}
-            </div>
         </div>
-        <footer>
-            {% block contentFooter %}Some content{% endblock %}
-        </footer>
+    </div>
+</header>
 
-        <script type="text/javascript" src="js/jquery.min.js"></script>
-        <script type="text/javascript" src="js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="js/boot-business.js"></script>
-    </body>
+<div class="content">
+    <div class="container">
+        {% block content %}Some content{% endblock %}
+    </div>
+</div>
+<footer>
+    {% block contentFooter %}Some content{% endblock %}
+</footer>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/boot-business.js"></script>
+</body>
 </html>
