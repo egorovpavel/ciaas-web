@@ -1,5 +1,66 @@
-.responsive-myblock {
-  @media {
+.content {
+  margin-top: 60px;
+  padding-top: 30px;
+}
 
+.editor {
+  .make-row();
+}
+
+form {
+  margin-top: 10px;
+  .ctrl {
+    textarea {
+      .form-control;
+      height: 200px;
+      font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+      font-size: 13px;
+    }
+    input {
+      .form-control;
+    }
+  }
+  .action {
+    .form-group;
+    .pull-right;
+    margin-top: 1em;
+    button {
+      .btn;
+      .btn-lg;
+    }
+    button.primary {
+      .btn-primary;
+    }
+    button.cancel {
+      .btn-default;
+    }
   }
 }
+
+.output {
+  .form-control;
+  margin-top: 10px;
+
+  min-height: 200px;
+  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-size: 13px;
+}
+
+header {
+  div {
+    .navbar;
+    .navbar-default;
+    .navbar-fixed-top;
+    div {
+      .container;
+    }
+  }
+}
+
+.project-nav {
+  ul {
+    .nav;
+    .nav-tabs;
+  }
+}
+

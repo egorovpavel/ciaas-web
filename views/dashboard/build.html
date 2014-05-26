@@ -1,0 +1,37 @@
+{%extends '../common/layout.html'%}
+{% block js %}
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io.connect('http://localhost');
+    socket.emit("build.feed", {
+        id: {
+    {
+        buildId
+    }
+    }
+    })
+    ;
+    var last;
+    socket.on('channel_{{buildId}}', function (data) {
+        if (data.message.charAt(0) == "\r" && data.message.charAt(1) != "\r" && last) {
+            document.getElementById("container").removeChild(last);
+        }
+        last = document.createTextNode(data.message + "\n");
+        document.getElementById("container").appendChild(last);
+        document.getElementById("container").scrollTop = document.getElementById("container").scrollHeight;
+    });
+</script>
+{% endblock %}
+{%block content%}
+<div class="editor">
+    <div class="project-nav">
+        <ul>
+            <li><a href="/dashboard">Editor</a></li>
+            <li class="active"><a href="/dashboard/build/{{buildId}}">Build #{{buildId}}</a></li>
+        </ul>
+    </div>
+    <div>
+        <pre id="container" class="output"></pre>
+    </div>
+</div>
+{%endblock%}

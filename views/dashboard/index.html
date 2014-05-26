@@ -1,21 +1,21 @@
 {%extends '../common/layout.html'%}
 
 {%block content%}
-<legend>
-    Dashboard
-</legend>
-<div>
-    <form method="post">
-        <div class="control-group">
-            <label for="commands">Commands</label>
-            <textarea id="commands" name="commands" class="input-large span12"></textarea>
-        </div>
-        <div class="control-group">
-            <div class="form-actions">
-                <button class="btn-primary">Build</button>
+<div class="editor">
+    <div class="project-nav">
+        <ul>
+            <li class="active"><a href="/dashboard">Editor</a></li>
+        </ul>
+    </div>
+    <div>
+        <form method="post">
+            <div class="ctrl">
+                <textarea rows="10" id="commands" name="commands"></textarea>
             </div>
-        </div>
-    </form>
-
+            <div class="action">
+                <button class="primary">Build</button>
+            </div>
+        </form>
+    </div>
 </div>
 {%endblock%}
