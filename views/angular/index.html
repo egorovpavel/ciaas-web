@@ -1,6 +1,3 @@
-{%extends '../common/app.html'%}
-
-{%block content%}
 <div class="editor">
     <div class="project-nav">
         <ul>
@@ -10,12 +7,11 @@
     <div>
         <form method="post">
             <div class="ctrl">
-                <textarea rows="10" id="commands" name="commands"></textarea>
+                <textarea ng-model="commands" rows="10" id="commands" name="commands"></textarea>
             </div>
             <div class="action">
-                <button class="primary">Build</button>
+                <button ng-click="build(commands)" ng-disabled="!commands" class="primary">Build</button>
             </div>
         </form>
     </div>
 </div>
-{%endblock%}
