@@ -7,7 +7,7 @@
     </div>
     <div>
         <div id="container" class="output">
-            <div ng-repeat="line in lines track by $index" ng-bind-html-unsafe="line">{{line}}</div>
+            <div ng-repeat="line in lines track by $index" ng-bind-html="line | to_trusted"></div>
         </div>
     </div>
 </div>
