@@ -1,0 +1,7 @@
+{
+    "development": {
+
+        "dialect" : "sqlite",
+        "storage" : "/vagrant/platform/web/database/main.db"
+    }
+}

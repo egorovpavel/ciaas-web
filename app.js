@@ -3,6 +3,16 @@ var express = require('express.io');
 var http = require('http');
 var swig = require('swig');
 var fs = require('fs');
+var Sequelize = require('sequelize');
+var sqlite    = require('sqlite3');
+var model =  require('/vagrant/platform/web/models_db/models_sqlite.js');
+var controllers_path = __dirname + '/controllers';
+
+var sqlize = new Sequelize('database', 'username', 'password', {
+    dialect: 'sqlite',
+    storage: '/vagrant/platform/web/database/main.db'
+});
+model(sqlize);
 
 var app = express();
 app.http().io();
@@ -15,9 +25,7 @@ app.disable('view cache');
 app.use(require('connect').bodyParser());
 app.use(express.static(__dirname + '/assets'));
 
-var controllers_path = __dirname + '/controllers';
-
-fs.readdirSync(controllers_path).forEach(function (file) {
+fs.readdirSync(controllers_path).forEach(function(file){
     require(controllers_path + '/' + file)(app);
 });
 
@@ -27,4 +35,6 @@ app.listen(
         console.log("Express server listening on port " + app.get('port'));
     }
 );
+
+
 return app;
