@@ -21,44 +21,27 @@ function ConfigController (app){
         .finally(function(){
             console.log("ALLWAYS");
         });
-});
+    });
 
-
-    /*
-        app.get('/config', function (req, res) {
-            var result = {
-                configs : null,
-                users : null
-            };
-            _repo.createConfig({
-                command : "Ola",
-                artifact_path : "/path/to"
-            })
+    app.post('/config',
+        function (req, res) {
+        var _body = req.body;
+        _repo.createConfig({
+            command : _body.commands,
+            artifact_path : "/path/to"
+        })
             .then(function(config){
-                result.configs = config;
-                return _usersRepo.all();
-            })
-            .then(function(users){
-                result.users = users;
-                return _someOtherRepo.getAll();
-            })
-            .then(function(some){
-                result.users = users;
-            })
-            .fail(function(err){
-                Logger.log("sdsfsd");
-                app.render("500");
-            })
-            .done(function(){
 
-                app.render("sddsad", result);
             })
-            .always(function(){
-                Logger.log("sdsfsd");
+            .catch(function(err){
+                if(err){
+                    console.log(err);
+                }
+            })
+            .finally(function(){
+                //console.log("ALLWAYS");
             });
-        });
-
-        */
+    });
 }
 
 module.exports = ConfigController;
