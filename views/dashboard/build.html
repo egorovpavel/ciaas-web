@@ -2,15 +2,16 @@
 {% block js %}
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    var socket = io.connect('http://localhost');
-    socket.emit("build.feed", {
-        id: {
+    var buildId = {
     {
         buildId
     }
     }
-    })
     ;
+    var socket = io.connect('http://localhost');
+    socket.emit("build.feed", {
+        id: buildId
+    });
     var last;
     socket.on('channel_{{buildId}}', function (data) {
         if (data.message.charAt(0) == "\r" && data.message.charAt(1) != "\r" && last) {

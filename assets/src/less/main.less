@@ -10,6 +10,7 @@
 form {
   margin-top: 10px;
   .ctrl {
+    margin: 10px;
     textarea {
       .form-control;
       height: 200px;
@@ -17,6 +18,9 @@ form {
       font-size: 13px;
     }
     input {
+      .form-control;
+    }
+    select {
       .form-control;
     }
   }
@@ -40,8 +44,10 @@ form {
 .output {
   .form-control;
   margin-top: 10px;
-
+  height: auto;
+  color: #FFF;
   min-height: 200px;
+  background-color: #000;
   font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   font-size: 13px;
 }

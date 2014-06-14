@@ -3,10 +3,13 @@
 var thoonk = require('thoonk').createClient();
 var Job = require('thoonk-jobs');
 var redis = require('redis');
+var ConvertAsci = require('ansi-to-html');
 module.exports = function (app) {
 
+    var convert = new ConvertAsci();
+
     app.get('/dashboard', function (req, res, next) {
-        res.render('dashboard/index');
+        res.render('common/app');
     });
 
     app.get('/dashboard/build/:id', function (req, res, next) {
@@ -20,26 +23,17 @@ module.exports = function (app) {
         var redisClient = redis.createClient();
         redisClient.on('message', function (channel, message) {
             req.io.emit("channel_" + id, {
-                message: message
+                message: convert.toHtml(message)
             })
         });
         redisClient.subscribe("channel_" + id);
-
-    })
+    });
     app.post('/dashboard', function (req, res, next) {
-        var item = {
-            id: Math.round(Math.random() * 100, 3),
-            config: {
-                language: "JS",
-                timeout: 500000
-            },
-            payload: {
-                commands: req.param('commands').split("\r\n")
-            },
-            result: {
-                status: null,
-                output: []
-            }
+        var item = req.param('item');
+        item.id = Math.round(Math.random() * 100, 3);
+        item.result = {
+            status: null,
+            output: []
         };
         console.log(item);
         thoonk.registerObject('Job', Job, function () {
@@ -47,11 +41,12 @@ module.exports = function (app) {
             jobPublisher.subscribe(function () {
                 jobPublisher.publish(item, {
                     id: item.id,
-                    onFinish: function () {
+                    onFinish: function (err, result) {
                         console.log('Job completed!');
+                        console.log(result);
                     }
                 }, function () {
-                    res.redirect('/dashboard/build/' + item.id);
+                    res.json({id: item.id});
                 });
             });
         });
