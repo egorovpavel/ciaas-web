@@ -6,6 +6,11 @@
         "redis": {
             "host": "127.0.0.1",
             "port": "6379"
+        },
+        "mysql": {
+            "host": "localhost",
+            "port": 3306,
+            "db": "ci"
         }
     },
     "production": {
@@ -15,6 +20,11 @@
         "redis": {
             "host": "127.0.0.1",
             "port": "6379"
+        },
+        "mysql": {
+            "host": "ci.curd3gwbhzuj.eu-west-1.rds.amazonaws.com",
+            "port": 3306,
+            "db": "ci"
         }
     }
 }
