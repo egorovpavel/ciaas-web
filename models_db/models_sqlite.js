@@ -15,36 +15,13 @@ module.exports = function (sq) {
     });
 
     var Project = sq.define('Project', {
-        account: {
-            type: Sequelize.STRING,
-            references: "Account",
-            referencesKey: "username"
-        },
         name: Sequelize.STRING,
         repo_url: Sequelize.STRING,
         command: Sequelize.STRING,
         artifact_path: Sequelize.STRING
     });
 
-    var Project_Container  = sq.define('Project_Container', {
-        project_id: {
-            type: Sequelize.INTEGER,
-            references: "Project",
-            referencesKey: "id"
-        },
-        container_id: {
-            type: Sequelize.STRING,
-            references: "Container",
-            referencesKey: "name"
-        }
-    });
-
     var Build = sq.define('Build', {
-        project_id: {
-            type: Sequelize.INTEGER,
-            references: "Project",
-            referencesKey: "id"
-        },
         log_build: Sequelize.STRING,
         log_result: Sequelize.STRING,
         status_exec: Sequelize.STRING, // NONE; RUNNING; COMPLETE
@@ -52,11 +29,19 @@ module.exports = function (sq) {
         time_finish: Sequelize.DATE
     });
 
+    Account.hasMany(Project);
+    //Project.belongsTo(Account);
+
+    Project.hasMany(Build);
+    Build.belongsTo(Project);
+
+    Project.hasMany(Container);
+    Container.hasMany(Project);
+
     return {
         Account: Account,
         Project : Project,
         Container : Container,
-        Project_Container: Project_Container,
         Build: Build
     };
 };

@@ -6,18 +6,15 @@ module.exports = {
           if(err){
               console.log(err);
           }
-          migration.describeTable('containers').success(function(attributes) {
-              console.log(attributes);
-              done();
-          });
+
       });
   },
   down: function(migration, DataTypes, done) {
-      migration.dropTable("builds");
-      migration.dropTable("project_containers");
-      migration.dropTable("projects");
-      migration.dropTable("accounts");
-      migration.dropTable("containers");
+      migration.dropTable("ContainersProjects");
+      migration.dropTable("Builds");
+      migration.dropTable("Projects");
+      migration.dropTable("Accounts");
+      migration.dropTable("Containers");
       done();
   }
 };

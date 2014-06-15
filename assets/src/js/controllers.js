@@ -5,16 +5,16 @@
 angular.module('CI.controllers', [])
     .controller('ConfigController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
         $scope.item = {
-            config : {
-                language : "nodejs",
-                timeout : 99999999
+            config: {
+                language: "nodejs",
+                timeout: 99999999
             },
-            reposity : {
-                uri : "https://github.com/mishoo/UglifyJS2.git",
-                name : "UglifyJS2"
+            reposity: {
+                uri: "https://github.com/mishoo/UglifyJS2.git",
+                name: "UglifyJS2"
             },
-            payload : {
-                commands : "npm update\nnpm test"
+            payload: {
+                commands: "npm update\nnpm test"
             }
         };
         $scope.buildId = undefined;
@@ -27,7 +27,7 @@ angular.module('CI.controllers', [])
             });
         };
     }])
-    .controller('BuildResultController', ['$scope', '$routeParams', 'iosocket','$sce', function ($scope, $routeParams, iosocket,$sce) {
+    .controller('BuildResultController', ['$scope', '$routeParams', 'iosocket', '$sce', function ($scope, $routeParams, iosocket, $sce) {
 
         $scope.buildId = $routeParams.buildid;
         $scope.complete = false;
