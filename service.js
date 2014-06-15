@@ -7,6 +7,7 @@ var Sequelize = require('sequelize');
 var sqlite    = require('sqlite3');
 var model =  require('/vagrant/platform/web/models_db/models_sqlite.js');
 var controllers_path = __dirname + '/controllers';
+var config = require('./config.json')[process.env.NODE_ENV || 'development'];
 
 var sqlize = new Sequelize('database', 'username', 'password', {
     dialect: 'sqlite',
@@ -19,9 +20,9 @@ app.http().io();
 app.set('env', "development");
 app.configure('development', function () {
     app.engine('html', swig.renderFile);
-    app.set('port', 3000);
-    app.set('redisPort', 6379);
-    app.set('redisHost', '127.0.0.1');
+    app.set('port', config.app.port);
+    app.set('redisPort', config.redis.port);
+    app.set('redisHost', config.redis.host);
     app.set('view engine', 'html');
     app.set('views', __dirname + '/views');
     app.disable('view cache');
