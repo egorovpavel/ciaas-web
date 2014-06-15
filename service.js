@@ -10,6 +10,8 @@ app.set('env', "development");
 app.configure('development', function () {
     app.engine('html', swig.renderFile);
     app.set('port', 3000);
+    app.set('redisPort', 6379);
+    app.set('redisHost', '127.0.0.1');
     app.set('view engine', 'html');
     app.set('views', __dirname + '/views');
     app.disable('view cache');
