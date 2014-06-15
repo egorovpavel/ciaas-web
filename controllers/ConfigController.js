@@ -1,4 +1,4 @@
-var _repository = require("../repository/ConfigRepo.js");
+var _repository = {};
 
 function ConfigController (app){
 
