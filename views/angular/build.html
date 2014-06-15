@@ -6,8 +6,25 @@
         </ul>
     </div>
     <div>
+        <br>
+
+        <div ng-show="complete && complete.StatusCode == 0" class="alert alert-success">
+            <div class="loader loader-black loader-pulse"></div>
+            Build complete
+        </div>
+        <div ng-show="complete && complete.StatusCode != 0" class="alert alert-danger">
+            <div class="loader loader-black loader-pulse"></div>
+            Build failed
+        </div>
+        <div ng-hide="complete" class="alert alert-info">
+            <div class="spinner"></div>
+            Building
+        </div>
+
         <div id="container" class="output">
-            <div ng-repeat="line in lines track by $index" ng-bind-html="line | to_trusted"></div>
+            <div ng-repeat="line in lines track by $index">
+                <span ng-bind-html="line.data | to_trusted"></span>
+            </div>
         </div>
     </div>
 </div>

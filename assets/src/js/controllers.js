@@ -30,20 +30,21 @@ angular.module('CI.controllers', [])
     .controller('BuildResultController', ['$scope', '$routeParams', 'iosocket','$sce', function ($scope, $routeParams, iosocket,$sce) {
 
         $scope.buildId = $routeParams.buildid;
+        $scope.complete = false;
         $scope.lines = [];
         iosocket.emit("build.feed", {
             id: $scope.buildId,
             repo_uri: $scope.repo_uri
         });
+        iosocket.on('channel_result_' + $scope.buildId, function (data) {
+            $scope.complete = data.status;
+        });
         iosocket.on('channel_' + $scope.buildId, function (data) {
-            var splited = data.message.split("\r\r");
-            if (splited.length > 1) {
-                console.log("splited");
-            }
-            if (/^\r[^\r]/.test(data.message) && !/^\r\n/.test(data.message)) {
+            var entry = data;
+            if (/\r/.test(entry.data) && /\r/.test($scope.lines[$scope.lines.length - 1].data)) {
                 console.log("pop");
                 $scope.lines.pop();
             }
-            $scope.lines.push(data.message);
+            $scope.lines[entry.line] = entry;
         });
     }]);

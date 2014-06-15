@@ -4,13 +4,14 @@ var http = require('http');
 var swig = require('swig');
 var fs = require('fs');
 var Sequelize = require('sequelize');
-var sqlite    = require('sqlite3');
-var model =  require('/vagrant/platform/web/models_db/models_sqlite.js');
+var model = require(__dirname + '/models_db/models_sqlite.js');
 var controllers_path = __dirname + '/controllers';
+var config = require('./config.json')[process.env.NODE_ENV || 'development'];
 
-var sqlize = new Sequelize('database', 'username', 'password', {
-    dialect: 'sqlite',
-    storage: '/vagrant/platform/web/database/main.db'
+var sqlize = new Sequelize(config.mysql.db, process.env.MYSQL_USER, process.env.MYSQL_PASS, {
+    dialect: 'mysql',
+    port: config.mysql.port,
+    host: config.mysql.host
 });
 model(sqlize);
 
@@ -19,7 +20,9 @@ app.http().io();
 app.set('env', "development");
 app.configure('development', function () {
     app.engine('html', swig.renderFile);
-    app.set('port', 3000);
+    app.set('port', config.app.port);
+    app.set('redisPort', config.redis.port);
+    app.set('redisHost', config.redis.host);
     app.set('view engine', 'html');
     app.set('views', __dirname + '/views');
     app.disable('view cache');

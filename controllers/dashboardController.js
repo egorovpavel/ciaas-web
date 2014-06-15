@@ -1,12 +1,18 @@
 "use strict";
 
-var thoonk = require('thoonk').createClient();
-var Job = require('thoonk-jobs');
 var redis = require('redis');
+var Queue = require('bull');
+var _ = require('lodash');
+
 var ConvertAsci = require('ansi-to-html');
 module.exports = function (app) {
-
+    var buildQueue = Queue("build", app.get('redisPort'), app.get('redisHost'));
     var convert = new ConvertAsci();
+    var getKey = function (id) {
+        return "report:build:" + id;
+    };
+    var redisFeedSubscriber = redis.createClient();
+    var redisClient = redis.createClient();
 
     app.get('/dashboard', function (req, res, next) {
         res.render('common/app');
@@ -20,35 +26,56 @@ module.exports = function (app) {
     });
     app.io.route('build.feed', function (req) {
         var id = req.data.id;
-        var redisClient = redis.createClient();
-        redisClient.on('message', function (channel, message) {
-            req.io.emit("channel_" + id, {
-                message: convert.toHtml(message)
-            })
+
+        var firstMessage = true;
+        redisFeedSubscriber.on('message', function (channel, message) {
+            if (channel == "channel_result_" + id) {
+                req.io.emit("channel_result_" + id, JSON.parse(message));
+                redisFeedSubscriber.unsubscribe("channel_result_" + id);
+                redisFeedSubscriber.unsubscribe("channel_" + id);
+            } else {
+                var msg = JSON.parse(message);
+                if (msg.data) {
+                    var data = {
+                        id: msg.id,
+                        line: msg.line,
+                        data: convert.toHtml(msg.data)
+                    };
+                    if (firstMessage) {
+                        if (msg.line > 0) {
+                            redisClient.lrange(getKey(id), 0, data.line - 1, function (err, entries) {
+                                var en = _.map(entries, function (item, idx) {
+                                    return {
+                                        id: id,
+                                        line: idx,
+                                        data: convert.toHtml(item)
+                                    }
+                                });
+                                en.push(data);
+                                _.forEach(en, function (elm) {
+                                    req.io.emit("channel_" + id, elm);
+                                });
+                            });
+                        } else {
+                            req.io.emit("channel_" + id, data);
+                        }
+                        firstMessage = false;
+                    } else {
+                        req.io.emit("channel_" + id, data);
+                    }
+                }
+            }
         });
-        redisClient.subscribe("channel_" + id);
+        redisFeedSubscriber.subscribe("channel_" + id);
+        redisFeedSubscriber.subscribe("channel_result_" + id);
+
     });
     app.post('/dashboard', function (req, res, next) {
         var item = req.param('item');
         item.id = Math.round(Math.random() * 100, 3);
-        item.result = {
-            status: null,
-            output: []
-        };
-        console.log(item);
-        thoonk.registerObject('Job', Job, function () {
-            var jobPublisher = thoonk.objects.Job('buildQueue');
-            jobPublisher.subscribe(function () {
-                jobPublisher.publish(item, {
-                    id: item.id,
-                    onFinish: function (err, result) {
-                        console.log('Job completed!');
-                        console.log(result);
-                    }
-                }, function () {
-                    res.json({id: item.id});
-                });
-            });
-        });
+
+        buildQueue.add(item);
+
+        res.json({id: item.id});
     });
 };
