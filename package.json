@@ -26,7 +26,8 @@
     "socket.io": "^0.9.17",
     "swig": "1.3.2",
     "thoonk": "^1.0.0",
-    "thoonk-jobs": "^1.0.0"
+    "thoonk-jobs": "^1.0.0",
+    "mysql": "^2.3.2"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

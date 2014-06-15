@@ -13,8 +13,11 @@ module.exports = {
       });
   },
   down: function(migration, DataTypes, done) {
+      migration.dropTable("builds");
+      migration.dropTable("project_containers");
+      migration.dropTable("projects");
+      migration.dropTable("accounts");
       migration.dropTable("containers");
-      migration.dropTable("configs");
       done();
   }
 };
