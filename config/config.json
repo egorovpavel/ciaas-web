@@ -14,10 +14,10 @@
         "dialect": "mysql"
     },
     "production": {
-        "username": "root",
-        "password": "root",
+        "username": "ciadmin",
+        "password": "ci777admin",
         "database": "ci",
-        "host": "127.0.0.1",
+        "host": "ci.curd3gwbhzuj.eu-west-1.rds.amazonaws.com",
         "dialect": "mysql"
     }
 }
