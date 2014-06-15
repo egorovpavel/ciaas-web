@@ -5,13 +5,13 @@ var swig = require('swig');
 var fs = require('fs');
 var Sequelize = require('sequelize');
 var sqlite    = require('sqlite3');
-var model =  require('/vagrant/platform/web/models_db/models_sqlite.js');
+var model = require(__dirname + '/models_db/models_sqlite.js');
 var controllers_path = __dirname + '/controllers';
 var config = require('./config.json')[process.env.NODE_ENV || 'development'];
 
 var sqlize = new Sequelize('database', 'username', 'password', {
     dialect: 'sqlite',
-    storage: '/vagrant/platform/web/database/main.db'
+    storage: __dirname + '/database/main.db'
 });
 model(sqlize);
 
