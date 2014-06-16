@@ -6,8 +6,20 @@
     <small>{{account.username}}</small>
 </legend>
 <div>
-    <h2>{{account.username}}</h2>
+    <div class="media">
+        <a class="pull-left" href="#">
+            <img class="media-object img-circle" src="http://www.gravatar.com/avatar/{{account.gravatar()}}" alt="...">
+        </a>
 
-    <div>{{account.email}}</div>
+        <div class="media-body">
+            <h4>{{account.username}}</h4>
+            <dl>
+                <dt>Full name</dt>
+                <dd>{{account.full_name}}</dd>
+                <dt>Email</dt>
+                <dd>{{account.email}}</dd>
+            </dl>
+        </div>
+    </div>
 </div>
 {%endblock%}

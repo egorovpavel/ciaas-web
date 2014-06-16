@@ -1,3 +1,4 @@
+var crypto = require('crypto');
 module.exports = function (sequelize, DataTypes) {
     var Account = sequelize.define('Account', {
         username: {
@@ -10,7 +11,8 @@ module.exports = function (sequelize, DataTypes) {
                     args: ["^[a-z]+$", 'i'],
                     msg: "Username must be alpha"
                 }
-            }
+            },
+            unique: true
         },
         full_name: {
             type: DataTypes.STRING,
@@ -33,8 +35,7 @@ module.exports = function (sequelize, DataTypes) {
                 notEmpty: {
                     msg: "Email cant be empty"
                 }
-            },
-            unique: true
+            }
         },
         password: {
             type: DataTypes.STRING,
@@ -47,6 +48,11 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         paranoid: true,
         timestamps: true,
+        instanceMethods: {
+            gravatar: function () {
+                return crypto.createHash('md5').update(this.email).digest('hex')
+            }
+        },
         classMethods: {
             associate: function (models) {
                 Account.hasMany(models.Project);

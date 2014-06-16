@@ -22,8 +22,8 @@ function AccountController(app) {
         res.render('account/form.html');
     });
 
-    app.get('/account/detail/:id', function (req, res) {
-        Accounts.get(req.param('id')).then(function (account) {
+    app.get('/account/:username', function (req, res) {
+        Accounts.getByUsername(req.param('username')).then(function (account) {
             res.render('account/detail.html', {
                 account: account
             });
@@ -39,8 +39,8 @@ function AccountController(app) {
             });
     });
 
-    app.get('/account/edit/:id', function (req, res) {
-        Accounts.get(req.param('id')).then(function (account) {
+    app.get('/account/:username/edit', function (req, res) {
+        Accounts.getByUsername(req.param('username')).then(function (account) {
             res.render('account/form.html', {
                 account: account
             });
@@ -56,20 +56,21 @@ function AccountController(app) {
             });
     });
 
-    app.post('/account/edit/:id', function (req, res) {
-        Accounts.update(req.param('id'), req.body.account)
+    app.post('/account/:username/edit', function (req, res) {
+        Accounts.update(req.param('username'), req.body.account)
             .then(function (account) {
-                res.redirect('/account/detail/' + account.id);
+                res.redirect('/account/' + account.username);
             })
             .catch(function (err) {
                 if (err) {
-                    console.log(err);
+
                     if (err.code && err.code == 'ER_DUP_ENTRY') {
                         err = {
-                            email: ["Email already exists"]
+                            username: ["User with this name already exists"]
                         };
                     }
-                    req.body.account.id = req.param('id');
+                    console.log(err);
+                    req.body.account.id = "dummy";
                     res.render('account/form.html', {
                         errors: err,
                         account: req.body.account
@@ -84,16 +85,16 @@ function AccountController(app) {
     app.post('/account/create', function (req, res) {
         Accounts.create(req.body.account)
             .then(function (account) {
-                res.redirect('/account/detail/' + account.id);
+                res.redirect('/account/' + account.username);
             })
             .catch(function (err) {
                 if (err) {
-                    console.log(err);
                     if (err.code && err.code == 'ER_DUP_ENTRY') {
                         err = {
-                            email: ["Email already exists"]
+                            username: ["User with this name already exists"]
                         };
                     }
+                    console.log(err);
                     res.render('account/form.html', {
                         errors: err,
                         account: req.body.account
@@ -105,8 +106,8 @@ function AccountController(app) {
             });
     });
 
-    app.get('/account/delete/:id', function (req, res) {
-        Accounts.get(req.param('id'))
+    app.get('/account/:username/delete', function (req, res) {
+        Accounts.getByUsername(req.param('username'))
             .then(function (account) {
                 res.render('account/delete.html', {
                     account: account
@@ -123,8 +124,8 @@ function AccountController(app) {
             });
     });
 
-    app.post('/account/delete/:id', function (req, res) {
-        Accounts.delete(req.param('id'))
+    app.post('/account/:username/delete', function (req, res) {
+        Accounts.delete(req.param('username'))
             .then(function (account) {
                 res.redirect('/account');
             })

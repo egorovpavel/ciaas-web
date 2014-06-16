@@ -15,8 +15,8 @@ var AccountsRepo = function () {
         return account.save();
     };
 
-    var updateAccount = function (id, accountProperties) {
-        return getById(id).then(function (account) {
+    var updateAccount = function (username, accountProperties) {
+        return getByUsername(username).then(function (account) {
             var promise = Promise.pending();
             account.username = accountProperties.username;
             account.full_name = accountProperties.full_name;
@@ -40,8 +40,12 @@ var AccountsRepo = function () {
         return db.Account.find(id);
     };
 
-    var softDelete = function (id) {
-        return getById(id).then(function (account) {
+    var getByUsername = function (username) {
+        return db.Account.find({where: {username: username}});
+    };
+
+    var softDelete = function (username) {
+        return getByUsername(username).then(function (account) {
             return account.destroy();
         })
     };
@@ -51,6 +55,7 @@ var AccountsRepo = function () {
         create: createAccount,
         all: getAll,
         get: getById,
+        getByUsername: getByUsername,
         'delete': softDelete
     }
 }();

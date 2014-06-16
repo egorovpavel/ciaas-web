@@ -1,6 +1,6 @@
 'use strict';
 
-function ProjectController(app) {
+function BuildController(app) {
 
     var Projects = app.get("repos").ProjectsRepo;
     var Accounts = app.get("repos").AccountsRepo;
@@ -29,7 +29,7 @@ function ProjectController(app) {
 
     app.post('/account/:username/project/create', function (req, res) {
         Accounts.getByUsername(req.param('username')).then(function (account) {
-            console.log(req.body.project);
+            req.body.project.accountId = account.id;
             return Projects.create(account, req.body.project);
         }).then(function () {
             res.redirect('/account/' + req.param('username') + '/project');
@@ -190,4 +190,4 @@ function ProjectController(app) {
 
 }
 
-module.exports = ProjectController;
+module.exports = BuildController;
