@@ -1,8 +1,6 @@
+module.exports = function (app) {
 
-module.exports = function(app){
-    var homeViewDir = './home/';
-
-    app.get('/home', function (req, res) {
-        res.render(homeViewDir + 'home');
+    app.get('/', function (req, res) {
+        res.render('home/home.html');
     });
-}
+};
