@@ -5,15 +5,18 @@ var Promise = require('bluebird');
 var ProjectsRepo = function () {
     var addProjectToAccount = function (account, projectProperties) {
         var promise = Promise.pending();
-        var project = db.Project.build(projectProperties);
-        var errors = project.validate();
+        var newproject = db.Project.build(projectProperties);
+        var errors = newproject.validate();
         if (errors) {
             promise.reject(errors);
             return promise.promise;
         }
 
-        return account.createProject(projectProperties).then(function () {
+        return newproject.save().then(function (project) {
+            newproject = project;
             return project.setContainer(projectProperties.container);
+        }).then(function () {
+            return newproject.setAccount(account);
         });
     };
 
@@ -28,8 +31,9 @@ var ProjectsRepo = function () {
                 promise.reject(errors);
                 return promise.promise;
             }
-            project.setContainer(projectProperties.container);
-            return project.save();
+            return project.save().then(function (project) {
+                return project.setContainer(projectProperties.container);
+            });
         });
     };
 
@@ -38,7 +42,7 @@ var ProjectsRepo = function () {
     };
 
     var getById = function (id) {
-        return db.Project.find({include: [db.Container], where: {id: id}});
+        return db.Project.find({include: [db.Container, db.Build], where: {id: id}});
     };
 
     var deleteProject = function (id) {

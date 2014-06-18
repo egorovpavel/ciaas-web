@@ -89,10 +89,11 @@ function AccountController(app) {
             })
             .catch(function (err) {
                 if (err) {
+                    console.log();
                     if (err.code && err.code == 'ER_DUP_ENTRY') {
-                        err = {
-                            username: ["User with this name already exists"]
-                        };
+                        var key = err.message.indexOf("for key 'email'") > 0 ? "email" : "username";
+                        err = {};
+                        err[key] = [key + " already exists"];
                     }
                     console.log(err);
                     res.render('account/form.html', {

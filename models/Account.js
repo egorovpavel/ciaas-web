@@ -35,7 +35,8 @@ module.exports = function (sequelize, DataTypes) {
                 notEmpty: {
                     msg: "Email cant be empty"
                 }
-            }
+            },
+            unique: true
         },
         password: {
             type: DataTypes.STRING,

@@ -2,18 +2,55 @@
 
 {%block center_column%}
 <legend>
-    Details of project
-    <small>{{project.name}}</small>
+    Project {{project.name}}
 </legend>
 <div>
-    <h4>{{project.name}}</h4>
+    {%if !project.build%}
+    <div class="alert alert-warning clearfix">
+        Project is not build. Press build to strart your first build.
+        <a href="/account/{{account.username}}/project/{{project.id}}/delete" class="pull-right btn btn-primary">
+            <span class="glyphicon glyphicon-flash"></span>
+            Build
+        </a>
+    </div>
+    {%endif%}
+    {%if project.build.status == "complete" and project.build.state == "0"%}
+    <div ng-show="complete && complete.StatusCode == 0" class="alert alert-success">
+        Last build successful
+    </div>
+    {%endif%}
+    {%if project.build.status == "complete" and project.build.state == "0"%}
+    <div class="alert alert-danger">
+        Last build failed
+    </div>
+    {%endif%}
+    {%if project.build.status == "running"%}
+    <div ng-hide="complete" class="alert alert-info">
+        <div class="spinner"></div>
+        Building...
+    </div>
+    {%endif%}
     <dl>
-        <dt>Name</dt>
-        <dd>{{project.name}}</dd>
-        <dt>Repository</dt>
-        <dd>{{project.repo_url}}</dd>
-        <dt>Commands</dt>
-        <dd>{{project.command}}</dd>
+        <dt>Repository:</dt>
+        <dd><code>{{project.repo_url}}</code></dd>
+        <dt>Commands:</dt>
+        <dd>
+            <pre>{{project.command}}</pre>
+        </dd>
     </dl>
+    <div class="btn-group-nowrap pull-right">
+        <a href="/account/{{account.username}}/project/{{project.id}}/delete" class="btn btn-primary">
+            <span class="glyphicon glyphicon-flash"></span>
+            Build
+        </a>
+        <a href="/account/{{account.username}}/project/{{project.id}}/edit" class="btn btn-default">
+            <span class="glyphicon glyphicon-pencil"></span>
+            Edit
+        </a>
+        <a href="/account/{{account.username}}/project/{{project.id}}/delete" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash"></span>
+            Delete
+        </a>
+    </div>
 </div>
 {%endblock%}

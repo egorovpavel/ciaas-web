@@ -12,7 +12,6 @@ function ProjectController(app) {
             acc = account;
             return  Projects.all(account);
         }).then(function (projects) {
-            console.log(projects);
             res.render('project/list.html', {
                 account: acc,
                 projects: projects
@@ -35,6 +34,7 @@ function ProjectController(app) {
             res.redirect('/account/' + req.param('username') + '/project');
         }).catch(function (err) {
             if (err) {
+                console.log(err);
                 if (err.code && err.code == 'ER_DUP_ENTRY') {
                     err = {
                         repo_url: ["Project with this repository already exists"]

@@ -34,7 +34,7 @@ module.exports = function (sequelize, DataTypes) {
         classMethods: {
             associate: function (models) {
                 Project.belongsTo(models.Account);
-                //Project.hasMany(models.Build);
+                Project.hasMany(models.Build);
                 Project.belongsTo(models.Container);
             }
         }
