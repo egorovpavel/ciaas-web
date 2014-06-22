@@ -1,10 +1,12 @@
 'use strict';
-
+var ConvertAsci = require('ansi-to-html');
+var _ = require('lodash');
 function BuildController(app) {
-
+    var convert = new ConvertAsci();
     var Projects = app.get("repos").ProjectsRepo;
     var Accounts = app.get("repos").AccountsRepo;
-    var Containers = app.get("repos").ContainersRepo;
+    var Builds = app.get("repos").BuildsRepo;
+    var BuildQueue = app.get("repos").BuildQueueRepo();
 
     app.get('/account/:username/project/:id/build', function (req, res) {
         var acc;
@@ -28,57 +30,75 @@ function BuildController(app) {
     });
 
     app.post('/account/:username/project/:id/build', function (req, res) {
-        Accounts.getByUsername(req.param('username')).then(function (account) {
-            req.body.project.accountId = account.id;
-            return Projects.create(account, req.body.project);
-        }).then(function () {
-            res.redirect('/account/' + req.param('username') + '/project');
+        var _buildid;
+        var _project;
+        var _id;
+        Projects.get(req.param('id')).then(function (project) {
+            _project = project;
+            return Builds.open(project);
+        }).then(function (build) {
+            _id = build.id;
+            _buildid = build.build_id;
+            return _project.getContainer();
+        }).then(function (container) {
+            var job = {
+                _id: _id,
+                id: _buildid,
+                config: {
+                    language: "JS",
+                    timeout: 500000
+                },
+                container: {
+                    primary: container.name
+                },
+                reposity: {
+                    uri: _project.repo_url,
+                    name: _project.name
+                },
+                skipSetup: false,
+                payload: {
+                    commands: _project.command.split("\\n")
+                }
+            };
+            return BuildQueue.add(job);
+        }).then(function (build) {
+            res.redirect('/account/' + req.param('username') + '/project/' + req.param('id') + "/build/" + _buildid);
         }).catch(function (err) {
             if (err) {
-                if (err.code && err.code == 'ER_DUP_ENTRY') {
-                    err = {
-                        repo_url: ["Project with this repository already exists"]
-                    };
-                }
-                console.log(err);
-                Containers.getPrimary().then(function (containers) {
-                    res.render('project/form.html', {
-                        errors: err,
-                        containers: containers,
-                        project: req.body.project
-                    });
-                })
+                res.status(500);
             }
         }).finally(function () {
-            console.log("ACCOUNT DONE");
+            console.log("build DONE");
         });
     });
 
     app.get('/account/:username/project/:id/build/:num', function (req, res) {
-        var _containers;
-        var _account;
+        var viewbag = {};
         Accounts.getByUsername(req.param('username')).then(function (account) {
-            _account = account;
-            return Containers.getPrimary();
-        }).then(function (containers) {
-            _containers = containers;
-            return Projects.get(req.param('id'));
+            viewbag.account = account;
+            return  Projects.get(req.param('id'));
         }).then(function (project) {
-            console.log(project);
-            res.render('project/form.html', {
-                containers: _containers,
-                project: project,
-                account: _account
-            });
+            viewbag.project = project;
+            console.log(viewbag);
+            return Builds.get(project, req.param('num'));
+        }).then(function (build) {
+            viewbag.build = build;
+            viewbag.log = _.reduce(build.log_build, function (aggr, l) {
+                return aggr + convert.toHtml(l.data)
+            }, "");
+            if (build.status_exec == 'COMPLETE') {
+                res.render('build/detail_static.html', viewbag);
+            } else {
+                res.render('build/detail.html', viewbag);
+            }
         }).catch(function (err) {
-            console.log(err);
             if (err) {
+                console.log(err);
                 res.status(404);
             }
-        })
-            .finally(function () {
-                console.log("ACCOUNT DONE");
-            });
+        }).finally(function () {
+            console.log("ACCOUNT LIST");
+        });
     });
 
 }

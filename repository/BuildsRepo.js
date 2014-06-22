@@ -4,16 +4,17 @@ var Promise = require('bluebird');
 
 var BuildsRepo = function () {
 
-    var openBuild = function (buildProperties) {
-        var promise = Promise.pending();
-        buildProperties.status_exec = "QUEUED";
-        var build = db.Build.build(buildProperties);
-        var errors = build.validate();
-        if (errors) {
-            promise.reject(errors);
-            return promise.promise;
-        }
-        return build.save();
+    var openBuild = function (project) {
+        return db.Build.count({ where: ["ProjectId = ?", project.id] }).then(function (n) {
+            var nextId = n + 1;
+            var buildProperties = {
+                status_exec: "QUEUED",
+                build_id: nextId
+            };
+            return db.Build.create(buildProperties);
+        }).then(function (build) {
+            return build.setProject(project);
+        });
     };
 
     var closeBuild = function (id, buildProperties) {
@@ -34,31 +35,22 @@ var BuildsRepo = function () {
         });
     };
 
-    var getAll = function () {
-        return db.Container.findAll();
+    var getAll = function (project) {
+        return project.getBuilds();
     };
 
-    var getById = function (id) {
-        return db.Container.find(id);
-    };
-
-    var getPrimary = function () {
-        return db.Container.findAll({where: {type: 'primary'}});
-    };
-
-    var destroy = function (id) {
-        return getById(id).then(function (container) {
-            return container.destroy();
-        })
+    var getById = function (project, id) {
+        return db.Build.find({where: {
+            ProjectId: project.id,
+            build_id: id
+        }});
     };
 
     return {
         open: openBuild,
         close: closeBuild,
         all: getAll,
-        get: getById,
-        getPrimary: getPrimary,
-        'delete': destroy
+        get: getById
     }
 }();
 

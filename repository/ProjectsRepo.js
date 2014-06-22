@@ -42,7 +42,7 @@ var ProjectsRepo = function () {
     };
 
     var getById = function (id) {
-        return db.Project.find({include: [db.Container, db.Build], where: {id: id}});
+        return db.Project.find({include: [db.Container], where: {id: id}});
     };
 
     var deleteProject = function (id) {

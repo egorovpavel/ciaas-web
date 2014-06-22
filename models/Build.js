@@ -1,7 +1,10 @@
 module.exports = function (sequelize, DataTypes) {
     var Build = sequelize.define('Build', {
+        build_id: {
+            type: DataTypes.INTEGER
+        },
         log_build: {
-            type: DataTypes.STRING
+            type: DataTypes.TEXT
         },
         log_result: {
             type: DataTypes.STRING

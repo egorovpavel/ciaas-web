@@ -8,10 +8,12 @@
     {%if !project.build%}
     <div class="alert alert-warning clearfix">
         Project is not build. Press build to strart your first build.
-        <a href="/account/{{account.username}}/project/{{project.id}}/delete" class="pull-right btn btn-primary">
-            <span class="glyphicon glyphicon-flash"></span>
-            Build
-        </a>
+        <form method="post" action="/account/{{account.username}}/project/{{project.id}}/build">
+            <button class="pull-right btn btn-primary">
+                <span class="glyphicon glyphicon-flash"></span>
+                Build
+            </button>
+        </form>
     </div>
     {%endif%}
     {%if project.build.status == "complete" and project.build.state == "0"%}
