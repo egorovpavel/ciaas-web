@@ -1,34 +1,56 @@
 'use strict';
 var ConvertAsci = require('ansi-to-html');
 var _ = require('lodash');
+var redis = require('redis');
 function BuildController(app) {
     var convert = new ConvertAsci();
     var Projects = app.get("repos").ProjectsRepo;
     var Accounts = app.get("repos").AccountsRepo;
     var Builds = app.get("repos").BuildsRepo;
     var BuildQueue = app.get("repos").BuildQueueRepo();
+    var redisFeedSubscriber = redis.createClient(app.get('redisPort'), app.get('redisHost'));
 
     app.get('/account/:username/project/:id/build', function (req, res) {
-        var acc;
+        var viewbag = {};
         Accounts.getByUsername(req.param('username')).then(function (account) {
-            acc = account;
-            return  Projects.all(account);
-        }).then(function (projects) {
-            console.log(projects);
-            res.render('project/list.html', {
-                account: acc,
-                projects: projects
-            });
+            viewbag.account = account;
+            return  Projects.get(req.param('id'));
+        }).then(function (project) {
+            viewbag.project = project;
+            return Builds.all(project)
+        }).then(function (builds) {
+            viewbag.builds = builds;
+            res.render('build/list.html', viewbag);
         }).catch(function (err) {
             if (err) {
                 console.log(err);
                 res.status(404);
             }
         }).finally(function () {
-            console.log("ACCOUNT LIST");
+            console.log("BUILDS LIST");
         });
     });
 
+    app.io.route('rt.build.feed', function (req) {
+
+        var id = req.data._id;
+        console.log("CHANNEL_" + id);
+        var OutputFeed = app.get("repos").OutputFeedRepo(app.get('redisPort'), app.get('redisHost'));
+        redisFeedSubscriber.on('message', function (channel, message) {
+            if (channel == "channel_result_" + id) {
+                req.io.emit("channel_result_" + id, JSON.parse(message));
+                redisFeedSubscriber.unsubscribe("channel_result_" + id);
+                redisFeedSubscriber.unsubscribe("channel_" + id);
+            } else {
+                OutputFeed.transform(id, message, function (channelName, message) {
+                    req.io.emit(channelName, message);
+                });
+            }
+        });
+        redisFeedSubscriber.subscribe("channel_" + id);
+        redisFeedSubscriber.subscribe("channel_result_" + id);
+
+    });
     app.post('/account/:username/project/:id/build', function (req, res) {
         var _buildid;
         var _project;
@@ -83,10 +105,18 @@ function BuildController(app) {
             return Builds.get(project, req.param('num'));
         }).then(function (build) {
             viewbag.build = build;
-            viewbag.log = _.reduce(build.log_build, function (aggr, l) {
-                return aggr + convert.toHtml(l.data)
-            }, "");
+
             if (build.status_exec == 'COMPLETE') {
+                viewbag.log = [];
+                _.each(build.log_build, function (l) {
+                    if (/\r/.test(l) && /\r/.test(viewbag.log[viewbag.log.length - 1])) {
+                        console.log("pop");
+                        viewbag.log.pop();
+                    } else {
+                        viewbag.log.push(convert.toHtml(l));
+                    }
+                });
+                console.log("COMPLETE", viewbag);
                 res.render('build/detail_static.html', viewbag);
             } else {
                 res.render('build/detail.html', viewbag);

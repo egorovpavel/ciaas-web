@@ -11,35 +11,35 @@ var OutputFeedRepo = function (port, host) {
     var getKey = function (id) {
         return "report:build:" + id;
     };
-    var transform = function (message, callback) {
+    var transform = function (id, message, callback) {
         var msg = JSON.parse(message);
         if (msg.data) {
             var data = {
-                id: msg.id,
+                id: id,
                 line: msg.line,
                 data: convert.toHtml(msg.data)
             };
             if (firstMessage) {
                 if (msg.line > 0) {
-                    redisClient.lrange(getKey(msg.id), 0, data.line - 1, function (err, entries) {
+                    redisClient.lrange(getKey(id), 0, data.line - 1, function (err, entries) {
                         var en = _.map(entries, function (item, idx) {
                             return {
-                                id: msg.id,
+                                id: id,
                                 line: idx,
                                 data: convert.toHtml(item)
                             }
                         });
                         en.push(data);
                         _.forEach(en, function (elm) {
-                            callback("channel_" + msg.id, elm);
+                            callback("channel_" + id, elm);
                         });
                     });
                 } else {
-                    callback("channel_" + msg.id, data);
+                    callback("channel_" + id, data);
                 }
                 firstMessage = false;
             } else {
-                callback("channel_" + msg.id, data);
+                callback("channel_" + id, data);
             }
         }
     };

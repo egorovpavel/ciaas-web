@@ -1,9 +1,8 @@
 {%extends '../common/layout.html'%}
 
 {%block center_column%}
-<div class="row-fluid">
-    <div class="col-lg-12">
-        <legend>
+
+<legend>
             Projects
             <div class="btn-group pull-right">
                 <a href="/account/{{account.username}}/project/create" class="btn btn-success btn-xs">
@@ -12,11 +11,9 @@
                 </a>
             </div>
         </legend>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="col-lg-12">
-        {%if projects.length > 0%}
+
+
+{%if projects.length > 0%}
         <table class="table table-hover table-striped">
             <thead>
             <tr>
@@ -38,27 +35,39 @@
             {% for project in projects%}
             <tr>
                 <td>
-                    {{project.id}}
+                    <div>{{project.id}}</div>
                 </td>
                 <td width="100%">
                     <a href="/account/{{account.username}}/project/{{project.id}}">
                         {{project.name}}
                     </a>
-                </td>
-                <td>
-                    <div class="label label-default">{%if project.container%}{{project.container.name}}{%endif%}</div>
-                </td>
-                <td>
-                    <div class="btn-group-nowrap">
-                        <a class="btn btn-info btn-xs"
-                           href="/account/{{account.username}}/project/{{project.id}}/build"><span
-                                class="glyphicon glyphicon-time"></span> Build history</a>
-                        <a class="btn btn-info btn-xs" href="/account/{{account.username}}/project/{{project.id}}/edit"><i
-                                class="glyphicon glyphicon-pencil"></i></a>
-                        <a class="btn btn-danger btn-xs"
-                           href="/account/{{account.username}}/project/{{project.id}}/delete"><i
-                                class="glyphicon glyphicon-trash"></i></a>
+
+                    <div>
+                        <small class="text-muted">{{project.repo_url}}</small>
                     </div>
+                </td>
+                <td class="vert-align">
+                    {{project.container.name}}
+                </td>
+                <td class="vert-align">
+                    <form method="post" action="/account/{{account.username}}/project/{{project.id}}/build">
+                        <div class="btn-group-nowrap">
+
+                            <button class="btn btn-xs btn-primary">
+                                <span class="glyphicon glyphicon-flash"></span>
+                                Build
+                            </button>
+                            <a class="btn btn-info btn-xs"
+                               href="/account/{{account.username}}/project/{{project.id}}/build"><span
+                                    class="glyphicon glyphicon-time"></span></a>
+                            <a class="btn btn-info btn-xs"
+                               href="/account/{{account.username}}/project/{{project.id}}/edit"><i
+                                    class="glyphicon glyphicon-pencil"></i></a>
+                            <a class="btn btn-danger btn-xs"
+                               href="/account/{{account.username}}/project/{{project.id}}/delete"><i
+                                    class="glyphicon glyphicon-trash"></i></a>
+                        </div>
+                    </form>
                 </td>
             </tr>
             {%endfor%}
@@ -69,6 +78,5 @@
             No entries yet
         </div>
         {%endif%}
-    </div>
-</div>
+
 {%endblock%}

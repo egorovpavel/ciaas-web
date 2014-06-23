@@ -36,7 +36,9 @@ var BuildsRepo = function () {
     };
 
     var getAll = function (project) {
-        return project.getBuilds();
+        return project.getBuilds({
+            order: 'build_id DESC'
+        });
     };
 
     var getById = function (project, id) {

@@ -22,6 +22,17 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DATE
         }
     }, {
+        getterMethods: {
+            log_build: function () {
+                return JSON.parse(this.getDataValue('log_build'));
+            }
+        },
+        instanceMethods: {
+            elapsed: function () {
+                var diff = this.finished.getTime() - this.started.getTime();
+                return new Date(diff);
+            }
+        },
         classMethods: {
             associate: function (models) {
                 Build.belongsTo(models.Project);

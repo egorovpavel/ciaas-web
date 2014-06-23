@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="CI" lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,6 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
-                    <li><a href="/dashboard">Dashboard</a></li>
                     <li><a href="/account">Accounts</a></li>
                     <li><a href="/container">Containers</a></li>
                 </ul>
@@ -36,6 +35,8 @@
 <footer>
     {% block contentFooter %}{% endblock %}
 </footer>
+{% block js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+{% endblock %}
 </body>
 </html>
