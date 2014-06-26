@@ -6,7 +6,7 @@ var fs = require('fs');
 var db = require('./models');
 var controllers_path = __dirname + '/controllers';
 var config = require('./config.json')[process.env.NODE_ENV || 'development'];
-
+var passport = require('passport');
 
 var app = express();
 app.http().io();
@@ -26,6 +26,13 @@ app.use('/app', express.static(__dirname + '/assets/dist'));
 app.use('/app', express.static(__dirname + '/assets/src'));
 app.use('/app', express.static(__dirname + '/assets/src/bower_components'));
 
+app.use(express.cookieParser());
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(express.session({ secret: 'keyboard cat' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 var repos_path = __dirname + '/repository';
 var repos = {};
@@ -38,9 +45,7 @@ fs.readdirSync(controllers_path).forEach(function (file) {
     require(controllers_path + '/' + file)(app);
 });
 
-
-db
-    .sequelize
+db.sequelize
     .sync()
     .complete(function (err) {
         if (err) {
