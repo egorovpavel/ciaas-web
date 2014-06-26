@@ -4,6 +4,7 @@ function ProjectController(app) {
 
     var Projects = app.get("repos").ProjectsRepo;
     var Accounts = app.get("repos").AccountsRepo;
+    var GitHubRemote = app.get("repos").GitHubRemoteRepo;
     var Containers = app.get("repos").ContainersRepo;
 
     app.get('/account/:username/project', function (req, res) {
@@ -28,19 +29,16 @@ function ProjectController(app) {
 
     app.post('/account/:username/project/create', function (req, res) {
         Accounts.getByUsername(req.param('username')).then(function (account) {
-            console.log(req.body.project);
             return Projects.create(account, req.body.project);
         }).then(function () {
             res.redirect('/account/' + req.param('username') + '/project');
         }).catch(function (err) {
             if (err) {
-                console.log(err);
                 if (err.code && err.code == 'ER_DUP_ENTRY') {
                     err = {
                         repo_url: ["Project with this repository already exists"]
                     };
                 }
-                console.log(err);
                 Containers.getPrimary().then(function (containers) {
                     res.render('project/form.html', {
                         errors: err,

@@ -7,7 +7,7 @@ module.exports = function (sequelize, DataTypes) {
                     msg: "Name cant be empty"
                 },
                 is: {
-                    args: ["^[a-z _0-9\\.]+$", 'i'],
+                    args: ["^[a-z \\-_0-9\\.]+$", 'i'],
                     msg: "Name must be alpha numeric"
                 }
             }

@@ -34,14 +34,13 @@ function BuildController(app) {
     app.io.route('rt.build.feed', function (req) {
 
         var id = req.data._id;
-        console.log("CHANNEL_" + id);
         var OutputFeed = app.get("repos").OutputFeedRepo(app.get('redisPort'), app.get('redisHost'));
         redisFeedSubscriber.on('message', function (channel, message) {
             if (channel == "channel_result_" + id) {
                 req.io.emit("channel_result_" + id, JSON.parse(message));
                 redisFeedSubscriber.unsubscribe("channel_result_" + id);
                 redisFeedSubscriber.unsubscribe("channel_" + id);
-            } else {
+            } else if(channel == "channel_" + id) {
                 OutputFeed.transform(id, message, function (channelName, message) {
                     req.io.emit(channelName, message);
                 });
@@ -79,7 +78,7 @@ function BuildController(app) {
                 },
                 skipSetup: false,
                 payload: {
-                    commands: _project.command.split("\\n")
+                    commands: _project.command.split("\n")
                 }
             };
             return BuildQueue.add(job);
