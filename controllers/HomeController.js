@@ -1,10 +1,15 @@
-module.exports = function (app) {
+'use strict';
 
-    app.get('/auth/github/callback', function (req, res) {
-        res.redirect('/account/:username/project/create');
-    });
+var HomeController = function (app) {
 
     app.get('/', function (req, res) {
         res.render('home/home.html');
     });
+
+    app.get('/about', function (req, res) {
+        res.render('login/about.html');
+    });
+
 };
+
+module.exports = HomeController;

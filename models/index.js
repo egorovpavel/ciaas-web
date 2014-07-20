@@ -3,10 +3,10 @@ var fs = require('fs')
     , Sequelize = require('sequelize')
     , lodash = require('lodash')
     , config = require('./../config.json')[process.env.NODE_ENV || 'development']
-    , sequelize = new Sequelize(config.mysql.db, process.env.MYSQL_USER || 'root', process.env.MYSQL_PASS || 'root', {
+    , sequelize = new Sequelize(process.env.MYSQL_DB || 'ci', process.env.MYSQL_USER || 'root', process.env.MYSQL_PASS || 'root', {
         dialect: 'mysql',
-        port: config.mysql.port,
-        host: config.mysql.host
+        port: process.env.MYSQL_PORT || '3306',
+        host: process.env.MYSQL_HOST || 'localhost'
     })
     , db = {};
 

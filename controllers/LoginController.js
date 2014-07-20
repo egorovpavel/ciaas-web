@@ -9,16 +9,8 @@ var GITHUB_CLIENT_SECRET = "01c08580bb27243720e338213150b54357b53a1d";
 function LoginController(app) {
     var Accounts = app.get("repos").AccountsRepo;
 
-    app.get('/', function (req, res) {
-        res.render('login/index.html');
-    });
-
     app.get('/login', function (req, res) {
         res.render('login/login.html');
-    });
-
-    app.get('/about', function (req, res) {
-        res.render('login/about.html');
     });
 
     app.get('/logout', function (req, res) {
@@ -35,16 +27,13 @@ function LoginController(app) {
     // request. The first step in GitHub authentication will involve redirecting
     // the user to github.com. After authorization, GitHub will redirect the user
     // back to this application at /auth/github/callback
-    app.get('/auth/github',
-        passport.authenticate('github'),
-        function (req, res) {
+    app.get('/auth/github',passport.authenticate('github'),function (req, res) {
             // The request will be redirected to GitHub for authentication, so this
             // function will not be called.
         }
     );
 
-    app.post('/signup',
-        function (req, res) {
+    app.post('/signup',function (req, res) {
             Accounts.create(req.body.account)
                 .then(function (account) {
                     res.redirect('/account/' + account.username);
@@ -75,11 +64,9 @@ function LoginController(app) {
     // request. If authentication fails, the user will be redirected back to the
     // login page. Otherwise, the primary route function function will be called,
     // which, in this example, will redirect the user to the home page.
-    app.get('/auth/github/callback',
-        passport.authenticate('github', { failureRedirect: '/login' }),
-        function (req, res) {
-            res.redirect('/account');
-        });
+    app.get('/auth/github/callback',passport.authenticate('github', { failureRedirect: '/login' }),function (req, res) {
+            res.redirect('/');
+    });
 
 };
 
@@ -106,10 +93,14 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new GitHubStrategy({
         clientID: GITHUB_CLIENT_ID,
         clientSecret: GITHUB_CLIENT_SECRET,
-        callbackURL: "http://localhost:8081/auth/github/callback"
+        callbackURL: "http://localhost:3000/auth/github/callback"
     },
     function (accessToken, refreshToken, profile, done) {
-        // asynchronous verification, for effect...
+
+        console.log("accessToken:",accessToken);
+        console.log("refreshToken:",refreshToken);
+        console.log("profile:",profile);
+
         process.nextTick(function () {
             // To keep the example simple, the user's GitHub profile is returned to
             // represent the logged-in user. In a typical application, you would want
@@ -139,5 +130,5 @@ passport.use(new LocalStrategy(
 
 var validatePassword = function (pwd1, pwd2) {
     return pwd1 == pwd2;
-}
+};
 module.exports = LoginController;
