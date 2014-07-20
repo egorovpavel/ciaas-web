@@ -3,6 +3,7 @@
 var Queue = require('bull');
 
 var BuildQueueRepo = function (port, host) {
+	console.log("---------------------------BuildQueueRepo");
     var buildQueue = Queue("build", port, host);
     var addJob = function (job) {
         return buildQueue.add(job);

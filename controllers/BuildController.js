@@ -6,8 +6,9 @@ function BuildController(app) {
     var convert = new ConvertAsci();
     var Projects = app.get("repos").ProjectsRepo;
     var Accounts = app.get("repos").AccountsRepo;
+    console.log("---------------------------BuildQueueRepo");
     var Builds = app.get("repos").BuildsRepo;
-    var BuildQueue = app.get("repos").BuildQueueRepo();
+    var BuildQueue = app.get("repos").BuildQueueRepo(app.get('redisPort'), app.get('redisHost'));
     var redisFeedSubscriber = redis.createClient(app.get('redisPort'), app.get('redisHost'));
 
     app.get('/account/:username/project/:id/build', function (req, res) {
