@@ -21,6 +21,12 @@ app.configure('development', function () {
     app.set('redisHost', config.redis.host);
     app.disable('view cache');
 });
+app.configure('production', function () {
+    app.engine('html', swig.renderFile);
+    app.set('port', config.app.port);
+    app.set('redisPort', config.redis.port);
+    app.set('redisHost', config.redis.host);
+});
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 app.use(require('connect').bodyParser());
