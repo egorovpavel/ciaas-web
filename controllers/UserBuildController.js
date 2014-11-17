@@ -71,7 +71,7 @@ function UserBuildController(app) {
                     })
                 },
                 artifact_path: _project.artifact_path,
-                project : _project,
+                project : _project.toJSON(),
                 reposity: {
                     uri: _project.repo_url,
                     name: _project.name,
