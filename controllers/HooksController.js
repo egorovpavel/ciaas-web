@@ -1,5 +1,5 @@
 'use strict';
-
+var _ = require('lodash');
 var HooksController = function(app){
 	var logger = app.get('logger');
 	var Projects = app.get("repos").ProjectsRepo;
@@ -60,6 +60,7 @@ var HooksController = function(app){
                     commands: _project.command.split("\r\n")
                 }
             };
+            console.log(job);
             return BuildQueue.add(job);
         }).then(function (build) {
             res.end("OK");
