@@ -54,7 +54,7 @@ var HooksController = function(app){
                     branch : _project.default_branch,
                     commit : _branch.commit
                 },
-                project : _project.toJSON(),
+                notify : [_project.account.email],
                 skipSetup: false,
                 payload: {
                     commands: _project.command.split("\r\n")

@@ -52,6 +52,7 @@ function UserBuildController(app) {
             _buildid = build.build_id;
             return _project.getContainer();
         }).then(function (container) {
+            console.log("ACCOUNT:",_project.account.email);
             var job = {
                 _id: _id,
                 id: _buildid,
@@ -71,13 +72,13 @@ function UserBuildController(app) {
                     })
                 },
                 artifact_path: _project.artifact_path,
-                project : _project.toJSON(),
                 reposity: {
                     uri: _project.repo_url,
                     name: _project.name,
                     branch : _project.default_branch,
                     commit : _branch.commit
                 },
+                notify : [_project.account.email],
                 skipSetup: false,
                 payload: {
                     commands: _project.command.split("\r\n")

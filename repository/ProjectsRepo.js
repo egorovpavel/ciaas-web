@@ -58,7 +58,7 @@ var ProjectsRepo = function () {
     };
 
     var getById = function (id) {
-        return db.Project.find({include: [{ model: db.Container},{ model: db.Container, as: 'SecondaryContainer' }], where: {id: id}});
+        return db.Project.find({include: [{ model: db.Account, as:"Account"},{ model: db.Container},{ model: db.Container, as: 'SecondaryContainer' }], where: {id: id}});
     };
 
     var deleteProject = function (id) {
